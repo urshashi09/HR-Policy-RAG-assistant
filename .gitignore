@@ -1,2 +1,27 @@
-basicragenv
+# Virtual environments
+basicragenv/
+.venv/
+venv/
+env/
+ENV/
+
+# Secrets and local configuration
 .env
+.env.*
+!.env.example
+
+# Python caches and tooling
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Generated FAISS vector-store index
+data/faiss_index/
