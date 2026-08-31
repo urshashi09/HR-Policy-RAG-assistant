@@ -25,4 +25,7 @@ htmlcov/
 
 # Generated FAISS vector-store index
 data/faiss_index/
+
+# Application logs
+logs/
 logger.txt
