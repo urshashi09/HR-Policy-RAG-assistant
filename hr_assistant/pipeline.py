@@ -6,6 +6,7 @@ from hr_assistant.doc_splitter import split_into_chunks
 from hr_assistant.tools import create_search_tool
 from hr_assistant.vector_store import vector_store_exists, load_vector_store, build_vector_store, save_vector_store, get_retriever  
 from hr_assistant.logger import get_logger
+from hr_assistant.tracing import check_langsmith_tracing
 
 logger = get_logger(__name__)
 
@@ -27,8 +28,11 @@ def build_vector_store_for_document(file_path:str = config.DATA_FILE_PATH):
 
 def build_hr_assistant(file_path:str= config.DATA_FILE_PATH):
     """build rag agent for the hr policy document"""
+
     logger.info("building HR assistant")
     config.check_api_keys()
+    check_langsmith_tracing()
+
     vector_store= build_vector_store_for_document(file_path)
     retriever= get_retriever(vector_store)
     llm= get_llm()
