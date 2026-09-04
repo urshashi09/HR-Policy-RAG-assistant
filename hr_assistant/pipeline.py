@@ -7,6 +7,7 @@ from hr_assistant.tools import create_search_tool
 from hr_assistant.vector_store import vector_store_exists, load_vector_store, build_vector_store, save_vector_store, get_retriever  
 from hr_assistant.logger import get_logger
 from hr_assistant.tracing import check_langsmith_tracing
+from hr_assistant.guardrails import REFUSAL_RESPONSE, check_input, check_output
 
 logger = get_logger(__name__)
 
@@ -45,6 +46,13 @@ def build_hr_assistant(file_path:str= config.DATA_FILE_PATH):
 def ask(agent, question: str)->str:
     """ask the agent a question and return the response"""
     logger.info("asking question: '%s'", question)
+
+    # input guard to make sure input is safe
+    input_is_safe, _= check_input(question)
+    if not input_is_safe:
+        logger.warning("input guard triggered for question: '%s'", question)
+        return REFUSAL_RESPONSE
+
     response= agent.invoke({
         "messages":[{
             "role": "user", "content": question
@@ -52,4 +60,13 @@ def ask(agent, question: str)->str:
     })
     answer= response["messages"][-1].content
     logger.info("answer: '%s'", answer)
+
+    # output guard to make sure output is safe
+    output_is_safe, _= check_output(answer)
+    if not output_is_safe:
+        logger.warning("output guard triggered for answer: '%s'", answer)
+        return REFUSAL_RESPONSE
+
+    
+    
     return answer
