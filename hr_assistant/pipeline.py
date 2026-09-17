@@ -4,7 +4,7 @@ from hr_assistant.document_loader import load_document
 from hr_assistant.llm import get_llm
 from hr_assistant.doc_splitter import split_into_chunks
 from hr_assistant.tools import create_search_tool
-from hr_assistant.vector_store import vector_store_exists, load_vector_store, build_vector_store, save_vector_store, get_retriever  
+from hr_assistant.vector_store import vector_store_exists, load_vector_store, build_vector_store, get_retriever  
 from hr_assistant.logger import get_logger
 from hr_assistant.tracing import check_langsmith_tracing
 from hr_assistant.guardrails import REFUSAL_RESPONSE, check_input, check_output
@@ -12,20 +12,23 @@ from hr_assistant.guardrails import REFUSAL_RESPONSE, check_input, check_output
 logger = get_logger(__name__)
 
 
+#data ingestion
 def build_vector_store_for_document(file_path:str = config.DATA_FILE_PATH):
-    """load + split + embed the document, reusing a saved index if we have one"""
+    """load + split + embed the document, 
+    or reusing a qdrant store if we have one"""
     if vector_store_exists():
         logger.info("loading vector store from disk that already exists")
         vector_store= load_vector_store()
         return vector_store
 
-    logger.info("no saved vector store found, loading document from '%s'", file_path)
+    logger.info("no qdrant collection found, building one from scratch")
     documents= load_document(file_path)
     chunks= split_into_chunks(documents)
     vector_store= build_vector_store(chunks)
-    save_vector_store(vector_store)
     return vector_store
 
+
+#data retrieval
 
 def build_hr_assistant(file_path:str= config.DATA_FILE_PATH):
     """build rag agent for the hr policy document"""
