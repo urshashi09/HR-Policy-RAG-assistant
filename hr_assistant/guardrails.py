@@ -2,20 +2,30 @@
 # using this we can catch the json response
 import json
 
-from langchain_groq import ChatGroq
-from hr_assistant.config import GUARD_MODEL_NAME
+from langchain_openai import ChatOpenAI
+from portkey_ai import createHeaders, PORTKEY_GATEWAY_URL
+
+from hr_assistant import config
 from hr_assistant.logger import get_logger
 
-logger= get_logger(__name__)
+logger = get_logger(__name__)
 
-REFUSAL_RESPONSE= "I'm sorry, but I cannot provide an answer to that question."
+REFUSAL_RESPONSE = (
+    "I’m sorry, but I can’t help with that request. "
+    "I can help explain the company’s HR policies."
+)
 
 
-#make private variables/ methods
-_guard_llm= ChatGroq(
-    model= GUARD_MODEL_NAME,
-    temperature= 0.0,
-    model_kwargs= {
+_guard_llm = ChatOpenAI(
+    api_key="portkey",
+    base_url=PORTKEY_GATEWAY_URL,
+    default_headers=createHeaders(
+        api_key=config.PORTKEY_API_KEY,
+        provider="@hrguard"
+    ),
+    model=config.GUARD_MODEL_NAME,
+    temperature=0.0,
+    model_kwargs={
         "response_format": {
             "type": "json_object"
         }
