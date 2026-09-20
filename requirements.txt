@@ -20,3 +20,7 @@ ipykernel
 
 
 streamlit
+
+
+portkey-ai
+langchain-openai

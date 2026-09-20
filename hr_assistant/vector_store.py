@@ -38,7 +38,7 @@ def load_vector_store():
     collection that was already created"""
     logger.info("connecting to qdrant cloud")
     embeddings_model= get_embedding_model()
-    vector_store= QdrantVectorStore.from_documents(
+    vector_store= QdrantVectorStore.from_existing_collection(
         embedding= embeddings_model,
         url= config.QDRANT_URL,
         api_key= config.QDRANT_API_KEY,

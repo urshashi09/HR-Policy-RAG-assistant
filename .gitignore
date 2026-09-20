@@ -27,5 +27,5 @@ htmlcov/
 data/faiss_index/
 
 logs/
-logger.txt
-tracing.txt
+*.txt
+
