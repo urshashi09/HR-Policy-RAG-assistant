@@ -24,3 +24,6 @@ streamlit
 
 portkey-ai
 langchain-openai
+
+
+openevals
