@@ -1,0 +1,16 @@
+services:
+  app:
+    build: .
+    command: streamlit run app.py --server.address=0.0.0.0
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env
+
+  eval:
+    build: .
+    command: python evaluate.py
+    env_file:
+      - .env
+    profiles:
+      - tools
