@@ -8,7 +8,7 @@ JINA_API_KEY = os.getenv("JINA_API_KEY")
 
 #gateway
 PORTKEY_API_KEY= os.getenv("PORTKEY_API_KEY")
-PORTKEY_CONFIG_ID = "pc-hr-pol-aea996"
+PORTKEY_CONFIG_ID = os.getenv("PORTKEY_CONFIG_ID")
 
 GUARD_MODEL_NAME= "openai/gpt-oss-safeguard-20b"
 
@@ -48,8 +48,19 @@ not know instead of guessing.
 
 
 def check_api_keys()->None:
-    """stop  early with a clear message if a required API key is missing"""
-    if not GROQ_API_KEY:
-        raise ValueError("GROQ_API_KEY is not set. Please set it in the .env file.")
-    if not JINA_API_KEY:
-        raise ValueError("JINA_API_KEY is not set. Please set it in the .env file.")
+    """Stop early with a clear message if required configuration is missing."""
+    required_values = {
+        "GROQ_API_KEY": GROQ_API_KEY,
+        "JINA_API_KEY": JINA_API_KEY,
+        "PORTKEY_API_KEY": PORTKEY_API_KEY,
+        "PORTKEY_CONFIG_ID": PORTKEY_CONFIG_ID,
+        "QDRANT_URL": QDRANT_URL,
+        "QDRANT_API_KEY": QDRANT_API_KEY,
+    }
+    missing = [name for name, value in required_values.items() if not value]
+    if missing:
+        raise ValueError(
+            "Missing required environment variable(s): "
+            + ", ".join(missing)
+            + ". Set them in the .env file."
+        )
