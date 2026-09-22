@@ -74,6 +74,17 @@ flowchart TD
 | Evaluation | OpenEvals and LangSmith LLM-as-a-judge checks for correctness and groundedness |
 | Delivery | Docker, Compose `app`/`eval` services, GitHub Actions, ECR, and EC2 deployment |
 
+## How This Differs from a Basic RAG Chatbot
+
+| Dimension | Basic RAG | This project |
+| :--- | :--- | :--- |
+| Retrieval | Direct similarity lookup | Agentic `search_hr_policy` tool with Qdrant-backed, top-3 retrieval |
+| Security | User input and model output pass through unchecked | Dedicated input and output guardrails with structured decisions |
+| LLM operations | Direct single-provider calls | Portkey provider abstraction with gateway-managed routing, fallback, retries, and caching |
+| Observability | Console output or ad-hoc debugging | LangSmith traces plus persistent daily application logs |
+| Quality control | Manual spot checks | OpenEvals/LangSmith correctness and groundedness evaluation on 10 curated cases |
+| Delivery | Local script execution | Docker, GitHub Actions validation, ECR image publishing, and EC2 deployment |
+
 ## Security & Guardrails
 
 ```text
@@ -229,4 +240,3 @@ python evaluate.py
 # Or run the evaluation service in Compose
 docker compose --profile tools run eval
 ```
-
